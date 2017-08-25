@@ -41,5 +41,6 @@ end
 get "/add/:title/:url" do
     storage = Storage.new
 
-    storage.add({:title=>title, :url=>url})
+    storage.add({:title=>params[:title],
+                 :url=>params[:url]})
 end

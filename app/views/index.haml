@@ -15,9 +15,10 @@
 
 %body
   %div
-    %input{"id"=>"add-title", "type"=>'text'}
-    %input{"id"=>"add-url", "type"=>'text'}
+    %input{"id"=>"add-title", "type"=>'text', "value"=>"NHK"}
+    %input{"id"=>"add-url", "type"=>'text', "value"=>"http://www3.nhk.or.jp/rss/news/cat0.xml"}
     %button{"id"=>"add-btn", "type"=>"button"} 追加
-- @feeds.each do |item|
   %div
-    %a{"href"=>"#{item['link']}"} #{item['title']}
+    - @feeds.each do |item|
+      %div
+        %a{"href"=>"#{item['link']}"} #{item['title']}
