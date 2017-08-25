@@ -12,17 +12,19 @@ require './storage'
 def refresh
     storage = Storage.new
 
-    data = storage.sites
+    sites = storage.sites
 
-    data.each do |row|
-        client = HTTPClient.new
-
-        res = client.get(row["url"])
+    client = HTTPClient.new
+    sites.each do |site|
+        res = client.get(site[:url])
         feed = RSS::Parser.parse(res.body)
         feed.items.each do |item|
-            storage.insert(item)
+            if (site[:last_updated] == nil || item.pubDate > site[:last_updated]) then
+                storage.insert(item)
+            end
         end
     end
+    sites.update(:last_updated => Time.now)
 end
 
 get "/" do
@@ -41,8 +43,9 @@ end
 post "/add" do
     storage = Storage.new
 
-    storage.add({:title=>params[:title],
-                 :url=>params[:url]})
+    puts params
+    storage.add({:title=>params["title"],
+                 :url=>params["url"]})
 
     @feeds = storage.articles
 

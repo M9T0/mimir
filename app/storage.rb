@@ -9,7 +9,7 @@ class Storage
             primary_key :id
             String :title
             String :url
-            Date :last_updated
+            Time :last_updated
         end
 
         @db.create_table? :articles do
@@ -18,20 +18,22 @@ class Storage
             String :title
             String :url
             String :body
+            Time :published
         end
     end
 
     def add(site)
         sites = @db[:sites]
-        sites.insert(:title=>site['title'],
-                     :url=>site['url'])
+        sites.insert(:title=>site[:title],
+                     :url=>site[:url])
     end
 
     def insert(article)
         articles = @db[:articles]
-        articles.insert(:title => article['title'],
-                        :url => article['link'],
-                        :body => article['body'])
+        articles.insert(:title => article.title,
+                        :url => article.link,
+                        :body => article.description,
+                        :published => article.pubDate)
     end
 
     def sites
@@ -39,7 +41,7 @@ class Storage
     end
 
     def articles
-        @db[:articles]
+        @db[:articles].order(Sequel.desc(:published))
     end
 end
 

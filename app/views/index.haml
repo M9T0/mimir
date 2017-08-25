@@ -3,22 +3,24 @@
   %title mimir
   %meta{charset:"utf-8"}
   %script{src:"https://code.jquery.com/jquery-3.2.1.min.js"}
-  :javascript
-    $(function() {
-      $('#add-btn').on('click', function(event) {
-        $.get('/add/' +
-        encodeURIComponent($('#add-title').val()) +
-        '/' +
-        encodeURIComponent($('#add-url'),val()))
-      });
-    })
-
+  %link{"rel"=>"stylesheet", "href"=>"https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.css"}
+  %script{"src"=>"https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"}
+  
 %body
-  %div
-    %input{"id"=>"add-title", "type"=>'text', "value"=>"NHK"}
-    %input{"id"=>"add-url", "type"=>'text', "value"=>"http://www3.nhk.or.jp/rss/news/cat0.xml"}
-    %button{"id"=>"add-btn", "type"=>"button"} 追加
-  %div
-    - @feeds.each do |item|
-      %div
-        %a{"href"=>"#{item['link']}"} #{item['title']}
+  %div{class:"ui segment"}
+    %form{"action"=>"add", "method"=>"POST"}
+      %div{class:"ui input"}
+        %input{"id"=>"add-title", "name"=>"title", "type"=>'text', "value"=>"NHK"}
+      %div{class:"ui input"}
+        %input{"id"=>"add-url", "name"=>"url", "type"=>'text', "value"=>"http://www3.nhk.or.jp/rss/news/cat0.xml"}
+      %button{"id"=>"add-btn", "class"=>"ui button", "type"=>"submit"} 追加
+    %div{class:"ui segment"}
+      - @feeds.each do |item|
+        %div{class:"ui card"}
+          %div{class:"content"}
+            %div{class:"header"}
+              %a{"href"=>"#{item[:link]}"} #{item[:title]}
+            %div{class:"description"}
+              %p= item[:body]
+          %div{class:"extra content"}
+            %p= item[:published]
