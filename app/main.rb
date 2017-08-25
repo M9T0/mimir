@@ -7,17 +7,39 @@ require "httpclient"
 require "sinatra"
 require "hamlit"
 
-get "/" do
-    data = YAML.load(File.read('list.yaml'))
+require './storage'
+
+def refresh
+    storage = Storage.new
+
+    data = storage.sites
 
     data.each do |row|
         client = HTTPClient.new
 
         res = client.get(row["url"])
         feed = RSS::Parser.parse(res.body)
-        @feed = feed.items
+        feed.items.each do |item|
+            storage.insert(item)
+        end
     end
+end
+
+get "/" do
+    refresh
+
+    storage = Storage.new
+    @feeds = storage.articles
 
     haml :index 
 end
 
+get "/refresh" do
+    refresh
+end
+
+get "/add/:title/:url" do
+    storage = Storage.new
+
+    storage.add({:title=>title, :url=>url})
+end

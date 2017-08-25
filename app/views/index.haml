@@ -2,7 +2,22 @@
 %head
   %title mimir
   %meta{charset:"utf-8"}
+  %script{src:"https://code.jquery.com/jquery-3.2.1.min.js"}
+  :javascript
+    $(function() {
+      $('#add-btn').on('click', function(event) {
+        $.get('/add/' +
+        encodeURIComponent($('#add-title').val()) +
+        '/' +
+        encodeURIComponent($('#add-url'),val()))
+      });
+    })
+
 %body
-- @feed.each do |item|
   %div
-    %a{"href"=>"#{item.link}"} #{item.title}
+    %input{"id"=>"add-title", "type"=>'text'}
+    %input{"id"=>"add-url", "type"=>'text'}
+    %button{"id"=>"add-btn", "type"=>"button"} 追加
+- @feeds.each do |item|
+  %div
+    %a{"href"=>"#{item['link']}"} #{item['title']}
