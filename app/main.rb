@@ -17,7 +17,7 @@ def refresh
     client = HTTPClient.new
     sites.each do |site|
         res = client.get(site[:url])
-        feed = RSS::Parser.parse(res.body)
+        feed = RSS::Parser.parse(res.body).to_feed("rss2.0")
         feed.items.each do |item|
             if (site[:last_updated] == nil || item.pubDate > site[:last_updated]) then
                 storage.insert(item)
