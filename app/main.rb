@@ -38,9 +38,13 @@ get "/refresh" do
     refresh
 end
 
-get "/add/:title/:url" do
+post "/add" do
     storage = Storage.new
 
     storage.add({:title=>params[:title],
                  :url=>params[:url]})
+
+    @feeds = storage.articles
+
+    haml :index 
 end
